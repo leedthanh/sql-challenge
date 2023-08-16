@@ -32,3 +32,47 @@ inner join departments as d
 on d.dept_no = dm.dept_no
 inner join employees as e
 on dm.emp_no = e.emp_no
+
+-- List first name, last name, and sex of each employee 
+-- whose first name is Hercules and whose last name begins with the letter B 
+-- whose last name begins with the letter B (2 points)
+
+select first_name,last_name, sex
+from employees
+where first_name like '%Hercules%'
+and last_name like 'B%';
+
+-- List each employee in the Sales department, including their employee number, 
+-- last name, and first name
+
+select d.dept_name, de.emp_no, e.last_name, e.first_name
+from dept_emp as de
+inner join departments as d
+on de.dept_no = d.dept_no
+inner join employees as e
+on e.emp_no = de.emp_no
+where d.dept_name = 'Sales' 
+limit 100;
+
+-- List each employee in the Sales and Development departments, 
+-- including their employee number, last name, first name, and department name 
+
+select * from departments
+
+select d.dept_name, de.emp_no, e.last_name, e.first_name
+from dept_emp as de
+inner join departments as d
+on de.dept_no = d.dept_no
+inner join employees as e
+on e.emp_no = de.emp_no
+where d.dept_name = 'Sales' or d.dept_name ='Development'
+limit 100;
+
+-- List the frequency counts, in descending order, of all the employee last names 
+-- (that is, how many employees share each last name)
+
+select last_name, count(last_name) as count
+from employees
+group by last_name
+order by count DESC
+limit 500;
