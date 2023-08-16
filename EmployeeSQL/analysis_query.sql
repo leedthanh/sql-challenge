@@ -1,78 +1,47 @@
---Analysis
---List the employee number, last name, first name, sex, and salary of each employee
+-- drop table if exists department;
 
-Select e.emp_no,e.last_name,e.first_name,e.sex,s.salary
-from employees as e
-inner join salaries as s
-on e.emp_no = s.emp_no;
+create table departments (
+	dept_no varchar(5) primary key,
+	dept_name varchar(20) not null
+);
 
--- List the first name, last name, and hire date 
--- for the employees who were hired in 1986
+create table titles (
+	title_id varchar(5) primary key,
+	titles varchar(20) not null
+);
 
-select first_name,last_name,hire_date
-from employees
-where hire_date like '%1986';
+create table employees (
+	emp_no INTEGER not NULL primary key,
+	emp_title_id VARCHAR(5) not NULL, 
+	foreign key (emp_title_id) references titles(title_id),
+	birth_date VARCHAR(10) not NULL,
+	first_name VARCHAR(30) not NULL,
+	last_name VARCHAR(30) not NULL,
+	sex VARCHAR(5) not NULL,
+	hire_date VARCHAR(30) not NULL
+);
 
--- List the manager of each department along with their department number, 
--- department name, employee number, last name, and first name
+create table dept_emp (
+	emp_no integer not null,
+	foreign key (emp_no) references employees (emp_no),
+	dept_no varchar(5) not null,
+	foreign key (dept_no) references departments (dept_no),
+	primary key (emp_no,dept_no)
+);
 
-select d.dept_no,d.dept_name,m.emp_no,e.last_name,e.first_name
-from departments as d
-inner join dept_manager as m
-on d.dept_no = m.dept_no
-inner join employees as e
-on e.emp_no = m.emp_no;
+create table dept_manager (
+	dept_no varchar(5) not null,
+	foreign key (dept_no) references departments (dept_no),
+	emp_no integer not null,
+	foreign key (emp_no) references employees (emp_no),
+	primary key (emp_no, dept_no)
+	
+);
 
--- List the department number for each employee along with that 
--- employee’s employee number, last name, first name, and department name
+create table salaries (
+	emp_no integer not null,
+	foreign key (emp_no) references employees (emp_no),
+	salary integer not null,
+	primary key (emp_no, salary)
+);
 
-select d.dept_no,dm.emp_no,e.last_name,e.first_name,d.dept_name
-from dept_emp as dm 
-inner join departments as d
-on d.dept_no = dm.dept_no
-inner join employees as e
-on dm.emp_no = e.emp_no
-
--- List first name, last name, and sex of each employee 
--- whose first name is Hercules and whose last name begins with the letter B 
--- whose last name begins with the letter B (2 points)
-
-select first_name,last_name, sex
-from employees
-where first_name like '%Hercules%'
-and last_name like 'B%';
-
--- List each employee in the Sales department, including their employee number, 
--- last name, and first name
-
-select d.dept_name, de.emp_no, e.last_name, e.first_name
-from dept_emp as de
-inner join departments as d
-on de.dept_no = d.dept_no
-inner join employees as e
-on e.emp_no = de.emp_no
-where d.dept_name = 'Sales' 
-limit 100;
-
--- List each employee in the Sales and Development departments, 
--- including their employee number, last name, first name, and department name 
-
-select * from departments
-
-select d.dept_name, de.emp_no, e.last_name, e.first_name
-from dept_emp as de
-inner join departments as d
-on de.dept_no = d.dept_no
-inner join employees as e
-on e.emp_no = de.emp_no
-where d.dept_name = 'Sales' or d.dept_name ='Development'
-limit 100;
-
--- List the frequency counts, in descending order, of all the employee last names 
--- (that is, how many employees share each last name)
-
-select last_name, count(last_name) as count
-from employees
-group by last_name
-order by count DESC
-limit 500;
